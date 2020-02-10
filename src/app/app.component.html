@@ -1,15 +1,17 @@
-<form [formGroup]="form">
-  <mat-form-field class="form-field">
-    <input matInput formControlName="password" type="password" />
-    <mat-error *ngIf="form.controls.password.errors">Weak password</mat-error>
-  </mat-form-field>
-  <mat-progress-bar
-    [value]="passScoreBar$ | async"
-    [color]="
-      form.controls.password.errors && form.controls.password.touched
-        ? 'warn'
-        : 'primary'
-    "
-  ></mat-progress-bar>
-  <button mat-raised-button type="submit" color="primary">Submit</button>
-</form>
+<div class="container">
+  <form [formGroup]="form">
+    <mat-form-field class="form-field">
+      <input matInput formControlName="password" type="password" />
+      <mat-error *ngIf="form.controls.password.errors">Weak password</mat-error>
+    </mat-form-field>
+    <mat-progress-bar
+      [value]="passScoreBar$ | async"
+      [color]="
+        form.controls.password.errors && form.controls.password.touched
+          ? 'warn'
+          : 'primary'
+      "
+    ></mat-progress-bar>
+    <button mat-raised-button type="submit" color="primary">Submit</button>
+  </form>
+</div>

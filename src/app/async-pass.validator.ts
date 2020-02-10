@@ -10,6 +10,7 @@ import { PasswordService } from './password.service';
 
 @Injectable({ providedIn: 'root' })
 export class AsyncPassValidator implements AsyncValidator {
+  private scoreEmitter$ = new Subject<number>();
   constructor(private pwService: PasswordService) {}
 
   validate(
@@ -17,6 +18,7 @@ export class AsyncPassValidator implements AsyncValidator {
   ): Promise<ValidationErrors | null> | Observable<ValidationErrors | null> {
     return timer(500).pipe(
       switchMap(_ => this.pwService.getPasswordScore(control.value)),
+      tap(score => this.scoreEmitter$.next(score)),
       map(score => {
         // if password score is below threshold, validation will fail
         if (score < PasswordService.MIN_PASSWORD_SCORE) {
@@ -26,5 +28,9 @@ export class AsyncPassValidator implements AsyncValidator {
         return null;
       })
     );
+  }
+
+  get score(): Observable<number> {
+    return this.scoreEmitter$;
   }
 }

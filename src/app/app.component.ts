@@ -1,7 +1,9 @@
 import { Component, ChangeDetectionStrategy, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { AsyncPassValidator } from './async-pass.validator';
+import { PasswordService } from './password.service';
 
 @Component({
   selector: 'app-root',
@@ -22,5 +24,18 @@ export class AppComponent implements OnInit {
     this.form = this.fb.group({
       password: ['', [], [this.pwValidator.validate.bind(this.pwValidator)]]
     });
+
+    this.passScoreBar$ = this.pwValidator.score.pipe(
+      map(score => {
+        // first, normalize value for minimum needed password strength.
+        score =
+          score > PasswordService.MIN_PASSWORD_SCORE
+            ? PasswordService.MIN_PASSWORD_SCORE
+            : score;
+
+        // then, normalize for progress bar value
+        return score * (100 / PasswordService.MIN_PASSWORD_SCORE);
+      })
+    );
   }
 }
